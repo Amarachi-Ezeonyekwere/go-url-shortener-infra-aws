@@ -34,3 +34,13 @@ variable "ecr_repository_url" {
   description = "Full ECR repository URL"
   type        = string
 }
+
+variable "cidr_ipv4_ingress_security_group" {
+  type        = string
+  description = "The CIDR block allowed for ingress traffic"
+}
+
+variable "cidr_ipv4_egress_security_group" {
+  type        = string
+  description = "The CIDR block allowed for egress traffic"
+}
