@@ -1,6 +1,6 @@
-output "vpc_id"{
-    description = "The ID of the main VPC. Downstream resources will use this to build security groups."
-    value = aws_vpc.main.id
+output "vpc_id" {
+  description = "The ID of the main VPC. Downstream resources will use this to build security groups."
+  value       = aws_vpc.main.id
 }
 
 output "public_subnet_id" {
