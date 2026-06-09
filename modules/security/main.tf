@@ -1,7 +1,7 @@
 resource "aws_security_group" "main" {
   name        = "security_group"
-  description = "security group for the VPC"
-  vpc_id      = aws.vpc_id
+  description = "Allow HTTP and SSH inbound, all outbound"
+  vpc_id      = var.vpc_id
   tags = {
     Name = "main"
   }
