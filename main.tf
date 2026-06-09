@@ -36,7 +36,7 @@ module "iam" {
 }
 
 module "compute" {
-    source = "./module/compute"
+    source = "./modules/compute"
 
   instance_type             = var.instance_type
   key_name                  = var.key_name

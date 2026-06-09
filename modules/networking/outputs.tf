@@ -1,5 +1,5 @@
 output "vpc_id"{
-    decription = "The ID of the main VPC. Downstream resources will use this to build security groups."
+    description = "The ID of the main VPC. Downstream resources will use this to build security groups."
     value = aws_vpc.main.id
 }
 
