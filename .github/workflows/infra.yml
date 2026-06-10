@@ -88,7 +88,7 @@ jobs:
           TF_VAR_ecr_repository_url: ${{ secrets.ECR_REPOSITORY_URL }}
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve -replace="module.compute.aws_instance.app"
+        run: terraform apply -auto-approve
         env:
           TF_VAR_key_name: ${{ secrets.TF_VAR_KEY_NAME }}
           TF_VAR_ecr_repository_url: ${{ secrets.ECR_REPOSITORY_URL }}
