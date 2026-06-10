@@ -45,6 +45,9 @@ resource "aws_instance" "app" {
     systemctl enable docker
     systemctl start docker
 
+    # After installing Docker, add ubuntu user to docker group
+    usermod -aG docker ubuntu
+
     # Authenticate to ECR using the instance IAM role — no credentials needed
     aws ecr get-login-password --region ${var.aws_region} | \
       docker login --username AWS --password-stdin ${var.ecr_repository_url}
