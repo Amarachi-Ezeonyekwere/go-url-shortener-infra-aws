@@ -135,19 +135,39 @@ jobs:
       - name: Deploy latest image
         run: |
           ssh -o StrictHostKeyChecking=no \
-              -i /tmp/linux_key.pem \
-              ubuntu@${{ needs.terraform.outputs.ec2_public_ip }} << 'ENDSSH'
-            aws ecr get-login-password --region us-east-1 | \
-              docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URL }}
-            docker pull ${{ secrets.ECR_REPOSITORY_URL }}:latest
-            docker stop url-shortener || true
-            docker rm url-shortener || true
-            docker run -d \
-              --name url-shortener \
-              --restart unless-stopped \
-              -p 80:8080 \
-              ${{ secrets.ECR_REPOSITORY_URL }}:latest
-            docker image prune -f
+            -o ServerAliveInterval=30 \
+            -i /tmp/linux_key.pem \
+            ubuntu@${{ needs.terraform.outputs.ec2_public_ip }} \
+            'bash -s' << 'ENDSSH'
+          set -e
+
+          echo "Waiting for Docker to be ready..."
+          for i in $(seq 1 30); do
+            if docker info > /dev/null 2>&1; then
+              echo "Docker is ready"
+              break
+            fi
+            echo "Attempt $i/30 — waiting 10 seconds..."
+            sleep 10
+          done
+
+          aws ecr get-login-password --region us-east-1 | \
+            docker login --username AWS --password-stdin ${{ secrets.ECR_REPOSITORY_URL }}
+
+          docker pull ${{ secrets.ECR_REPOSITORY_URL }}:latest
+          docker stop url-shortener || true
+          docker rm url-shortener || true
+
+          docker run -d \
+            --name url-shortener \
+            --restart unless-stopped \
+            -p 80:8080 \
+            -e APP_HOST=http://${{ needs.terraform.outputs.ec2_public_ip }} \
+            ${{ secrets.ECR_REPOSITORY_URL }}:latest
+
+          docker image prune -f
+          echo "Deployment complete"
+          exit 0
           ENDSSH
 
       - name: Cleanup SSH key
