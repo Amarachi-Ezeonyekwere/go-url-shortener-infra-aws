@@ -161,7 +161,7 @@ jobs:
 
           sudo docker pull ${{ secrets.ECR_REPOSITORY_URL }}:latest
           sudo docker stop url-shortener || true
-          sudo docker rm url-shortener || true
+          sudo docker rm -f url-shortener || true
 
           sudo docker run -d \
             --name url-shortener \
