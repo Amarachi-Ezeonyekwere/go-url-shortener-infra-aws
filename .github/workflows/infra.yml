@@ -9,6 +9,15 @@ on:
       - 'docs/**'        
       - '.gitignore'     
   workflow_dispatch:
+   inputs:
+      action:
+        description: 'Choose whether to Deploy or Destroy the infrastructure'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
 
 env:
   AWS_REGION: us-east-1
@@ -87,13 +96,20 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan
+        # Checks if you selected "destroy" in the UI. If yes, it creates a destroy plan.
+        run: |
+          if [ "${{ github.event.inputs.action }}" = "destroy" ]; then
+            terraform plan -destroy -out=tfplan
+          else
+            terraform plan -out=tfplan
+          fi
         env:
           TF_VAR_key_name: ${{ secrets.TF_VAR_KEY_NAME }}
           TF_VAR_ecr_repository_url: ${{ secrets.ECR_REPOSITORY_URL }}
 
-      - name: Terraform Apply
-        run: terraform apply -auto-approve
+      - name: Terraform Apply or Destroy
+        # This executes whatever plan was generated in the previous step (Apply or Destroy)
+        run: terraform apply -auto-approve tfplan
         env:
           TF_VAR_key_name: ${{ secrets.TF_VAR_KEY_NAME }}
           TF_VAR_ecr_repository_url: ${{ secrets.ECR_REPOSITORY_URL }}
