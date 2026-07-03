@@ -3,6 +3,11 @@ name: Infra — Provision & Deploy
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**.md'          
+      - 'README.md'      
+      - 'docs/**'        
+      - '.gitignore'     
   workflow_dispatch:
 
 env:
