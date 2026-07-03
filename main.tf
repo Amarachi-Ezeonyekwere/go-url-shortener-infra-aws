@@ -12,7 +12,7 @@ terraform {
     bucket         = "url-shortener-tf-state-529150585712"
     key            = "infra/terraform.tfstate"
     region         = "us-east-1"
-    dynamodb_table = "url-shortener-tf-locks"
+    use_lockfile   = true
     encrypt        = true
   }
 }
