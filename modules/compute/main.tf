@@ -22,7 +22,7 @@ resource "aws_instance" "app" {
   key_name               = var.key_name
   iam_instance_profile   = var.ec2_instance_profile_name
 
-  user_data = base64encode(<<-EOF
+  user_data_base64 = base64encode(<<-EOF
     #!/bin/bash
     set -e
 
